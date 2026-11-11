@@ -1,0 +1,62 @@
+name: Release
+
+# 触发方式：
+#   1. 推送 v* 标签（例如 v0.0.1）→ 构建三平台产物并发布 GitHub Release
+#   2. 手动触发（仅构建，产物上传为 workflow artifact，不发布）
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            script: --win
+          - os: macos-latest
+            script: --mac
+          - os: ubuntu-latest
+            script: --linux
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Build renderer + main
+        run: npm run build
+
+      - name: Package & publish
+        # 只有打 tag 时才带 --publish always，手动触发只出产物不发布
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder ${{ matrix.script }} --publish ${{ startsWith(github.ref, 'refs/tags/') && 'always' || 'never' }}
+
+      - name: Upload artifacts (manual run only)
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: transius-${{ matrix.os }}
+          path: |
+            release/*.exe
+            release/*.dmg
+            release/*.AppImage
+          if-no-files-found: ignore
