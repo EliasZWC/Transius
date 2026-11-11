@@ -1,6 +1,10 @@
 node_modules/
 dist/
 release/
+release-installer/
+build/payload/
+build/installer-build.json
+build/installer-project/
 *.log
 .DS_Store
 .vite/

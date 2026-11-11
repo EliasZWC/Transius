@@ -1,6 +1,6 @@
 {
   "name": "transius",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Transius - a desktop SSH/SFTP file transfer client",
   "main": "dist/main/main/index.js",
   "author": "Transius",
@@ -20,7 +20,8 @@
     "build:main": "tsc -p tsconfig.main.json",
     "start": "npm run build && cross-env NODE_ENV=production electron .",
     "typecheck": "tsc -p tsconfig.renderer.json --noEmit && tsc -p tsconfig.main.json --noEmit",
-    "package": "npm run build && electron-builder"
+    "package": "npm run build && electron-builder",
+    "installer": "node scripts/build-installer.mjs"
   },
   "dependencies": {
     "ssh2": "^1.15.0"
@@ -54,14 +55,10 @@
     },
     "win": {
       "target": [
-        "nsis"
+        "dir"
       ],
-      "artifactName": "${productName}-${version}-win-${arch}.${ext}"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "shortcutName": "Transius"
+      "artifactName": "${productName}-${version}-win-${arch}.${ext}",
+      "signAndEditExecutable": false
     },
     "mac": {
       "target": [

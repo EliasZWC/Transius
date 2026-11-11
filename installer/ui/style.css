@@ -1,0 +1,410 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Transius Installer · 样式
+   ══════════════════════════════════════════════════════════════════════════
+
+   严格遵循 ../HouseStyle：
+   · 纯灰阶四档：nav-bg #131313 / bg #1E1E1E / surface #242424 / raised #303030
+   · 唯一有色：--success #7EE2A8（进度条 + 主按钮文字）、--danger #E06C5E
+   · 分割线用 --bg（比卡片暗一档），不用 --outline
+   · 等宽更纱黑体，链首即 Sarasa Mono SC
+   · 自绘 32px Windows 标题栏，控制按钮 46×32，关闭悬停 #C42B1C
+
+   安装器与主应用共用同一套令牌，视觉上是同一个产品。
+   ------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: dark;
+
+  --bg: #1e1e1e;
+  --surface: #242424;
+  --surface-raised: #303030;
+  --nav-bg: #131313;
+  --outline: #333333;
+  --on-surface: #ececea;
+  --on-surface-variant: #9a9a98;
+  --nav-active: #f2f2f0;
+  --nav-inactive: #7e7e7c;
+  --success: #7ee2a8;
+  --danger: #e06c5e;
+
+  --hover: rgba(236, 236, 234, 0.045);
+  --scrim: rgba(0, 0, 0, 0.62);
+
+  --font-mono: 'Sarasa Mono SC', 'Sarasa Term SC', 'Sarasa Fixed SC', 'Termetron Mono',
+    'Roboto Mono', 'Cascadia Mono', Consolas, monospace;
+
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  --titlebar-h: 32px;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--on-surface);
+  background: var(--bg);
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── 自绘标题栏（与主应用完全一致）────────────────────────────────────── */
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  height: var(--titlebar-h);
+  background: var(--nav-bg);
+  -webkit-app-region: drag;
+  flex-shrink: 0;
+}
+.titlebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding-left: 10px;
+}
+.titlebar-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: #b4b4b2;
+}
+.titlebar-drag {
+  flex: 1;
+  height: 100%;
+}
+.titlebar-controls {
+  display: flex;
+  height: 100%;
+  -webkit-app-region: no-drag;
+}
+.titlebar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: var(--titlebar-h);
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #b4b4b2;
+  cursor: pointer;
+  transition: background 90ms linear, color 90ms linear;
+}
+.titlebar-btn:hover {
+  background: rgba(255, 255, 255, 0.055);
+  color: #f0f0ee;
+}
+.titlebar-btn:active {
+  background: rgba(255, 255, 255, 0.085);
+}
+.titlebar-btn.close:hover {
+  background: #c42b1c;
+  color: #fff;
+}
+.titlebar-btn.close:active {
+  background: #b2271b;
+}
+
+/* ── 布局 ──────────────────────────────────────────────────────────────── */
+
+.window {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 22px 24px 0;
+}
+
+/* 页头：图标 + 标题 + 版本 */
+.head {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 18px;
+}
+.head-logo {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+.head-text {
+  min-width: 0;
+}
+.head-title {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: var(--nav-active);
+}
+.head-sub {
+  margin-top: 3px;
+  font-size: 11.5px;
+  color: var(--on-surface-variant);
+}
+
+/* 步骤区
+   ⚠️ 必须显式处理 [hidden]：.steps 设了 display:flex，会覆盖浏览器
+   对 hidden 属性的默认 display:none，导致所有步骤同时显示。 */
+.steps {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.steps[hidden] {
+  display: none !important;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.field > label {
+  font-size: 11.5px;
+  color: var(--on-surface-variant);
+}
+.path-row {
+  display: flex;
+  gap: 7px;
+}
+.input {
+  flex: 1;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: var(--radius);
+  background: var(--bg);
+  border: none;
+  outline: none;
+  box-shadow: inset 0 0 0 1px var(--outline);
+  color: var(--on-surface);
+  font-family: inherit;
+  font-size: 12px;
+  user-select: text;
+  min-width: 0;
+}
+.input:focus {
+  box-shadow: inset 0 0 0 1px var(--on-surface-variant);
+}
+.input[readonly] {
+  color: var(--on-surface-variant);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--on-surface);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 120ms var(--ease), opacity 120ms var(--ease);
+}
+.btn:hover:not(:disabled) {
+  background: var(--surface-raised);
+}
+.btn:active:not(:disabled) {
+  opacity: 0.6;
+}
+.btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* 主操作：HouseStyle 规定是「灰底 + --success 文字」，不是填充色块 */
+.btn.primary {
+  background: var(--surface-raised);
+  color: var(--success);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.btn.primary:hover:not(:disabled) {
+  background: #3a3a3a;
+}
+
+/* 选项 */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 6px 0;
+}
+.option {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 14px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--on-surface);
+}
+.option:hover {
+  background: var(--surface-raised);
+}
+/* 卸载模式下隐藏选项行；同样要覆盖 display:flex */
+.option[hidden] {
+  display: none !important;
+}
+.option input {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--on-surface-variant);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* 进度 */
+.progress-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  padding-bottom: 10px;
+}
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--on-surface-variant);
+}
+.progress-bar {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--outline);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 2px;
+  background: var(--success);
+  transition: width 150ms linear;
+}
+.progress-detail {
+  font-size: 11px;
+  color: #6e6e6c;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 完成 */
+.done-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+}
+.done-icon {
+  width: 46px;
+  height: 46px;
+  color: var(--success);
+}
+.done-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--nav-active);
+}
+.done-sub {
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  line-height: 1.7;
+  max-width: 380px;
+  word-break: break-all;
+  user-select: text;
+}
+
+/* 错误 */
+.error-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+.error-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--danger);
+}
+.error-detail {
+  font-size: 11.5px;
+  color: var(--on-surface-variant);
+  line-height: 1.7;
+  user-select: text;
+  word-break: break-word;
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+/* 页脚按钮：取消在左、确定在右 */
+.foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px 18px;
+  border-top: 1px solid var(--surface);
+  margin-top: 18px;
+}
+.foot .spacer {
+  flex: 1;
+}
+
+/* 卸载确认 */
+.uninstall-list {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 12px 14px;
+  font-size: 11.5px;
+  color: var(--on-surface-variant);
+  line-height: 1.9;
+}
+.uninstall-list code {
+  font-family: inherit;
+  color: var(--on-surface);
+  user-select: text;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 5px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}

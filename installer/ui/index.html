@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';"
+    />
+    <title>Transius Setup</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="window">
+      <!-- 自绘标题栏，与主应用一致 -->
+      <header class="titlebar">
+        <div class="titlebar-brand">
+          <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true">
+            <rect x="0.9" y="0.9" width="30.2" height="30.2" rx="8" fill="#1B1B1B" stroke="#333" stroke-width="1.2" />
+            <path d="M8.5 12.5h11" stroke="#ECECEA" stroke-width="2.2" stroke-linecap="round" />
+            <path d="m16.2 8.8 4 3.7-4 3.7" stroke="#ECECEA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+            <path d="M23.5 19.5h-11" stroke="#9A9A98" stroke-width="2.2" stroke-linecap="round" />
+            <path d="m15.8 15.8-4 3.7 4 3.7" stroke="#9A9A98" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+          </svg>
+          <span class="titlebar-title" id="tbTitle">Transius Setup</span>
+        </div>
+        <div class="titlebar-drag"></div>
+        <div class="titlebar-controls">
+          <button class="titlebar-btn" id="btnMin" title="最小化" aria-label="最小化">
+            <svg width="10" height="10" viewBox="0 0 10 10"><rect x="0" y="4.5" width="10" height="1" fill="currentColor" /></svg>
+          </button>
+          <button class="titlebar-btn close" id="btnClose" title="关闭" aria-label="关闭">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.1">
+              <path d="M0.5 0.5l9 9M9.5 0.5l-9 9" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="body">
+        <div class="head">
+          <svg class="head-logo" viewBox="0 0 32 32" aria-hidden="true">
+            <rect x="0.9" y="0.9" width="30.2" height="30.2" rx="8" fill="#1B1B1B" stroke="#333" stroke-width="1" />
+            <path d="M7.5 12h11" stroke="#ECECEA" stroke-width="2" stroke-linecap="round" />
+            <path d="m15.5 8.5 3.6 3.5-3.6 3.5" stroke="#ECECEA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+            <path d="M24.5 20h-11" stroke="#9A9A98" stroke-width="2" stroke-linecap="round" />
+            <path d="m16.5 16.5-3.6 3.5 3.6 3.5" stroke="#9A9A98" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+          </svg>
+          <div class="head-text">
+            <div class="head-title" id="headTitle">安装 Transius</div>
+            <div class="head-sub" id="headSub">SSH 文件传输客户端</div>
+          </div>
+        </div>
+
+        <!-- 步骤 1：选择位置 -->
+        <section class="steps" id="stepInstall">
+          <div class="field">
+            <label for="installPath">安装位置</label>
+            <div class="path-row">
+              <input class="input" id="installPath" spellcheck="false" />
+              <button class="btn" id="btnBrowse">浏览…</button>
+            </div>
+          </div>
+
+          <div class="options">
+            <label class="option">
+              <input type="checkbox" id="optDesktop" />
+              <span>创建桌面快捷方式</span>
+            </label>
+            <label class="option">
+              <input type="checkbox" id="optStartMenu" checked />
+              <span>添加到开始菜单</span>
+            </label>
+            <label class="option">
+              <input type="checkbox" id="optLaunch" checked />
+              <span>安装完成后启动 Transius</span>
+            </label>
+          </div>
+
+          <div class="uninstall-list" id="spaceInfo">正在计算所需空间…</div>
+        </section>
+
+        <!-- 步骤 2：进度 -->
+        <section class="steps" id="stepProgress" hidden>
+          <div class="progress-area">
+            <div class="progress-label">
+              <span id="progStage">正在安装…</span>
+              <span id="progPercent">0%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+            <div class="progress-detail" id="progDetail"></div>
+          </div>
+        </section>
+
+        <!-- 步骤 3：完成 -->
+        <section class="steps" id="stepDone" hidden>
+          <div class="done-area">
+            <svg class="done-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9.5" />
+              <path d="m7 12.5 3.5 3.5L17 8.5" />
+            </svg>
+            <div class="done-title" id="doneTitle">安装完成</div>
+            <div class="done-sub" id="doneSub"></div>
+          </div>
+        </section>
+
+        <!-- 错误 -->
+        <section class="steps" id="stepError" hidden>
+          <div class="error-area">
+            <div class="error-title" id="errTitle">安装失败</div>
+            <div class="error-detail" id="errDetail"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="foot">
+        <button class="btn" id="btnCancel">取消</button>
+        <div class="spacer"></div>
+        <button class="btn primary" id="btnMain">安装</button>
+      </div>
+    </div>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>

@@ -1,6 +1,6 @@
 # Transius
 
-**Version:** 0.0.1
+**Version:** 0.0.2
 
 桌面端 SSH 文件传输客户端。双栏本地 ↔ 远程浏览、拖拽传输、带进度/暂停/续传的传输队列。
 
@@ -15,8 +15,25 @@
 npm install
 npm run dev        # 开发（Vite HMR + Electron）
 npm start          # 生产构建后启动
-npm run package    # 打包安装程序（electron-builder）
+npm run installer  # 构建自研安装器 → release-installer/Transius-Setup-<ver>.exe
+npm run package    # 用 electron-builder 出原生包（mac/linux）
 ```
+
+## 安装器
+
+Windows 使用**自研安装器**（不用 electron-builder 的 NSIS）：
+
+- 按用户安装到 `%LOCALAPPDATA%\Programs\Transius`，**无需管理员权限**
+- 自绘 GUI（32px 标题栏、灰阶配色、等宽更纱黑体，与主应用同一套 HouseStyle）
+- 可选安装路径、桌面/开始菜单快捷方式、安装后启动
+- 写入 HKCU 卸载信息（控制面板「应用和功能」可见）
+- 首次安装 / 覆盖更新 / 卸载三态自动识别（读注册表 `InstallLocation`）
+- 静默安装：`Transius-Setup.exe /S /D=C:\path`
+- 卸载：`Transius-Setup.exe --uninstall`（GUI）或 `--uninstall /S`（静默）
+
+> ⚠️ 卸载时会删除安装目录。由于安装器进程自己持有 `app.asar` 句柄，
+> 删除由**独立 PowerShell 进程**在安装器退出后完成（Windows 句柄语义，
+> 同进程内的重试/改名均无效）。
 
 ## 功能
 
