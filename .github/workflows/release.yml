@@ -32,7 +32,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
@@ -60,3 +60,26 @@ jobs:
             release/*.dmg
             release/*.AppImage
           if-no-files-found: ignore
+
+  # ⚠️ electron-builder 在多平台并行构建时会各自建一个 **draft** release，
+  #    即使传了 --publish always 也不会自动转为正式版。
+  #    若不补这一步，产物的下载链接会是 untagged-<hash> 这种临时地址。
+  publish:
+    name: Publish release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Un-draft the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          # 三个平台可能各建了一个 draft，逐个发布；已正式化的会返回错误，忽略即可
+          gh release list --repo "$GITHUB_REPOSITORY" --limit 20 --json tagName,isDraft \
+            --jq '.[] | select(.isDraft) | .tagName' | while read -r name; do
+              echo "Publishing draft: $name"
+              gh release edit "$name" --repo "$GITHUB_REPOSITORY" --draft=false || true
+            done
+          echo "--- final state ---"
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isDraft,url
